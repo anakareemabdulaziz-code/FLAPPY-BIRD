@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flappy Bird Premium - Retro Future Adventure</title>
+    
+    <!-- Meta Descriptions for SEO -->
+    <meta name="description" content="Mainkan Flappy Bird Premium dengan grafis memukau, skin shop, power-ups pelindung, magnet koin, dan tema cyberpunk & synthwave retro modern.">
+    <meta name="keywords" content="flappy bird, retro game, HTML5 canvas, indie game, cyberpunk, synthwave">
+    
+    <!-- Premium Google Fonts and Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="sunny">
+
+    <div id="gameWrapper">
+        
+        <!-- ==========================================
+             GAMEPLAY CANVAS
+             ========================================== -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- ==========================================
+             HUD / IN-GAME OVERLAY
+             ========================================== -->
+        <div id="hudOverlay">
+            <div class="hud-pill score-container">
+                <span class="score-label">Score</span>
+                <span class="score-val" id="currentScore">0</span>
+            </div>
+            
+            <div class="hud-pill coin-pill">
+                <span class="coin-icon">💰</span>
+                <span id="currentCoins">0</span>
+            </div>
+        </div>
+
+        <!-- Active Power-ups HUD Indicator -->
+        <div id="powerupIndicator">
+            <!-- Badges will be dynamically inserted here via JS -->
+        </div>
+
+        <!-- Pause Indicator Pill -->
+        <div id="pauseIndicator">
+            <span>⏸️</span>
+            <span>Game Paused</span>
+        </div>
+
+        <!-- Tap / Click To Play Floating Hint -->
+        <div id="tapToPlayIndicator" class="active">
+            <div class="tap-icon">👆</div>
+            <div class="tap-text">Tekan untuk Terbang</div>
+        </div>
+
+        <!-- ==========================================
+             MAIN MENU SCREEN
+             ========================================== -->
+        <section id="mainMenuScreen" class="overlay-screen active">
+            <div class="game-logo-container">
+                <h1 class="game-title" id="mainTitle">Flappy Bird</h1>
+                <p class="game-subtitle">Retro Premium</p>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="btn-primary" id="btnPlay" aria-label="Mulai Game">
+                    <span>🎮</span> Play Game
+                </button>
+                <button class="btn-secondary" id="btnOpenShop" aria-label="Buka Toko Skin">
+                    <span>🛍️</span> Skin Shop
+                </button>
+                <button class="btn-secondary" id="btnOpenSettings" aria-label="Buka Pengaturan">
+                    <span>⚙️</span> Settings
+                </button>
+            </div>
+
+            <div class="high-score-banner">
+                <span>🏆 High Score:</span>
+                <strong id="mainHighScore">0</strong>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SKIN SHOP SCREEN
+             ========================================== -->
+        <section id="shopScreen" class="overlay-screen">
+            <div class="screen-header">
+                <h2 class="screen-title"><span>🛍️</span> Skin Shop</h2>
+                <div class="shop-currency">
+                    <span>💰</span>
+                    <span id="shopCoins">0</span>
+                </div>
+            </div>
+
+            <!-- List of bird skins -->
+            <div class="skins-grid" id="skinsGrid">
+                <!-- Dynamically generated via JS -->
+            </div>
+
+            <button class="btn-secondary" id="btnBackFromShop" style="margin-top: auto; max-width: 200px;">
+                <span>⬅️</span> Back
+            </button>
+        </section>
+
+        <!-- ==========================================
+             SETTINGS SCREEN
+             ========================================== -->
+        <section id="settingsScreen" class="overlay-screen">
+            <div class="screen-header" style="margin-bottom: 30px;">
+                <h2 class="screen-title"><span>⚙️</span> Settings</h2>
+            </div>
+
+            <div class="settings-list">
+                <!-- Theme selection -->
+                <div class="setting-item">
+                    <span class="setting-label">Tema Visual</span>
+                    <div class="theme-options">
+                        <button class="theme-btn active" data-theme-val="sunny" id="themeSunny">☀️ Sunny</button>
+                        <button class="theme-btn" data-theme-val="cyberpunk" id="themeCyberpunk">⚡ Cyber</button>
+                        <button class="theme-btn" data-theme-val="synthwave" id="themeSynthwave">🌅 Retro</button>
+                    </div>
+                </div>
+
+                <!-- Sound toggle -->
+                <div class="setting-item" style="margin-top: 10px;">
+                    <div class="toggle-switch-container">
+                        <span class="setting-label" style="margin-bottom: 0;">Efek Suara (SFX)</span>
+                        <label class="switch">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-secondary" id="btnBackFromSettings" style="margin-top: auto; max-width: 200px;">
+                <span>⬅️</span> Back
+            </button>
+        </section>
+
+        <!-- ==========================================
+             GAME OVER SCREEN
+             ========================================== -->
+        <section id="gameOverScreen" class="overlay-screen">
+            <h2 class="gameover-title">Game Over</h2>
+
+            <div class="stats-card">
+                <!-- New High Score ribbon badge -->
+                <div class="new-badge" id="newHighScoreBadge" style="display: none;">NEW!</div>
+                
+                <div class="stats-row">
+                    <span class="stats-label">Skor Akhir</span>
+                    <span class="stats-value score" id="endScore">0</span>
+                </div>
+                
+                <div class="stats-row">
+                    <span class="stats-label">Koin Didapat</span>
+                    <span class="stats-value" style="color: var(--accent);" id="endCoinsEarned">+0</span>
+                </div>
+
+                <div class="stats-row" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 12px; margin-top: 4px;">
+                    <span class="stats-label">Skor Terbaik</span>
+                    <span class="stats-value" id="endBestScore">0</span>
+                </div>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="btn-primary" id="btnPlayAgain" aria-label="Main Lagi">
+                    <span>🔁</span> Play Again
+                </button>
+                <button class="btn-secondary" id="btnBackToMenu" aria-label="Kembali ke Menu Utama">
+                    <span>🏠</span> Menu Utama
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Core Game Scripts -->
+    <script src="sound.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
